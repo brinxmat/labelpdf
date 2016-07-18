@@ -18,7 +18,7 @@ unicode text for multiple scripts in ways that are not supported directly in Pos
 
 Creating labels:
 
-```java -jar labelpdf-all-1.0-SNAPSHOT.jar --data='<formatted json>' --output='<filename.pdf>'
+```java -jar labelpdf-all-1.0-SNAPSHOT.jar --data='<formatted json>' --output='<filename.pdf>'```
 
 JSON should be formatted according to the following:
 
