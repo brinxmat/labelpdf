@@ -18,7 +18,9 @@ unicode text for multiple scripts in ways that are not supported directly in Pos
 
 Creating labels:
 
-```java -jar labelpdf-all-1.0-SNAPSHOT.jar --data='<formatted json>' --output='<filename.pdf>'```
+```
+    java -jar labelpdf-all-1.0-SNAPSHOT.jar --data='<formatted json>' --output='<filename.pdf>'
+```
 
 JSON should be formatted according to the following:
 
@@ -35,4 +37,18 @@ JSON should be formatted according to the following:
     }
 ```
 
-e.g.: ```java -jar labelpdf-all-1.0-SNAPSHOT.jar --data='{"callNumber": "820.000 Brims", "creator": "Brims, Timo", "title": "Å hello ЙЖ asdasdsadsadasdasdasdasdasdفقك", "publicationDate": "2014", "holdingBranch": "HUTL", "biblio": "3000321", "copyNumber": "001", "barcode": "03011231231231"}' --output="./file.pdf"```
+e.g.: 
+```
+    java -jar labelpdf-all-1.0-SNAPSHOT.jar \
+        --data='{
+                  "callNumber": "820.000 Brims",
+                 "creator": "Brims, Timo",
+                 "title": "Å hello ЙЖ",
+                 "publicationDate": "2014",
+                 "holdingBranch": "HUTL",
+                 "biblio": "3000321",
+                 "copyNumber": "001",
+                 "barcode": "03011231231231"
+                 }' \
+                 --output="./file.pdf"
+```
