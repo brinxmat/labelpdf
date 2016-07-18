@@ -8,8 +8,6 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import java.io.IOException;
-
 /**
  * Responsibility: create an entrypoint for the application.
  */
