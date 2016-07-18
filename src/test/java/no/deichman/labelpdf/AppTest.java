@@ -10,6 +10,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -25,16 +27,14 @@ public class AppTest {
     private static final String EOL = System.getProperty("line.separator");
     private ByteArrayOutputStream consoleText;
     private PrintStream console;
-    private App app;
     private String jsondata;
     private String filename;
 
     @Before
-    public void setup() {
+    public void setup() throws NoSuchMethodException, ClassNotFoundException {
         consoleText = new ByteArrayOutputStream();
         console = System.out;
         System.setOut(new PrintStream(consoleText));
-        app = new App();
 
         jsondata = "{"
                 + "\"callNumber\": \"820.000 Brims\",\n"
@@ -48,7 +48,6 @@ public class AppTest {
                 + "}";
 
         filename = "testApp.pdf";
-
     }
 
     @Test
@@ -58,13 +57,13 @@ public class AppTest {
     }
 
     @Test
-    public void test_main_method() throws IOException {
+    public void test_main_method() throws IOException, InvocationTargetException, IllegalAccessException, NoSuchMethodException, ClassNotFoundException {
         String[] args = new String[2];
         String temporaryFolderPath = temporaryFolder.getRoot().getAbsolutePath();
 
         args[0] = "--data=" + jsondata;
         args[1] = "--output=" +temporaryFolderPath + filename;
-        app.main(args);
+        appMain(args);
 
         assertTrue(new File(temporaryFolderPath + filename).exists());
         assertEquals("", consoleText.toString());
@@ -73,5 +72,15 @@ public class AppTest {
     @After
     public void teardown() {
         System.setOut(console);
+    }
+
+    private void appMain(String[] args) throws ClassNotFoundException,
+            NoSuchMethodException,
+            InvocationTargetException,
+            IllegalAccessException {
+        Class<?> clazz = Class.forName("no.deichman.labelpdf.App");
+        Method appMain;
+        appMain = clazz.getMethod("main", String[].class);
+        appMain.invoke(null, new Object[] {args});
     }
 }

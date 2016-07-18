@@ -172,7 +172,6 @@ class Label {
 
         font = PdfFontFactory.createFont(new FontProvider().read(REGULAR), PdfEncodings.IDENTITY_H, true);
 
-
         document = new Document(pdfDocument, dymoAddressLabel);
         document.setFixedPosition(ZERO, ZERO, HEIGHT, WIDTH);
         document.setWidth(WIDTH);

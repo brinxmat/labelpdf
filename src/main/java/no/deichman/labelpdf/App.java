@@ -15,7 +15,7 @@ import java.io.IOException;
  */
 public final class App {
 
-    App() {}
+    private App() {}
 
     public static void main(String[] args) throws IOException {
 

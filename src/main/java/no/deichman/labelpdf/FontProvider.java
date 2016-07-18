@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 
-import static com.sun.tools.doclint.Entity.ne;
-
 /**
  * Responsibility: manage reading resources.
  */
