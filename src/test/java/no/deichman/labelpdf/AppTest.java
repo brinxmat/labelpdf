@@ -13,6 +13,7 @@ import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import static com.sun.tools.doclets.formats.html.markup.HtmlStyle.title;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -51,7 +52,7 @@ public class AppTest {
     }
 
     @Test
-    public void test_main_method_with_no_args_fails() throws IOException {
+    public void test_main_method_with_no_args_fails() throws Exception {
         App.main(null);
         assertEquals("Usage: Label --data=<JSON data string> --output=</path/to/file.pdf>" + EOL, consoleText.toString());
     }
@@ -92,6 +93,27 @@ public class AppTest {
         appMain(args);
         assertEquals("Usage: Label --data=<JSON data string> --output=</path/to/file.pdf>"
                 + EOL, consoleText.toString());
+    }
+
+    @Test(expected = Exception.class)
+    public void test_it_throws_up_if_barcode_is_null() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        String[] args = new String[2];
+        String temporaryFolderPath = temporaryFolder.getRoot().getAbsolutePath();
+
+        args[0] = "--data=" + "{\"title\": \"Fishy tail\"}";
+        args[1] = "--output=" +temporaryFolderPath + filename;
+        appMain(args);
+    }
+
+    @Test
+    public void test_it_passes_if_barcode_is_not_null() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        String[] args = new String[2];
+        String temporaryFolderPath = temporaryFolder.getRoot().getAbsolutePath();
+
+        args[0] = "--data=" + "{\"barcode\": \"03101234\"}";
+        args[1] = "--output=" +temporaryFolderPath + filename;
+        appMain(args);
+        assertTrue(new File(temporaryFolderPath + filename).exists());
     }
 
     @After

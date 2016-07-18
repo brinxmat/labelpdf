@@ -20,6 +20,7 @@ import com.itextpdf.layout.element.Text;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Optional;
 
 /**
  * Responsibility: allow creation of basic label.
@@ -185,7 +186,7 @@ class Label {
 
     }
 
-    void renderPDF(String filename) throws IOException {
+    void renderPDF(String filename) throws Exception {
         renderPDF(filename,
                 getCallNumber(),
                 getCreator(),
@@ -205,17 +206,17 @@ class Label {
                           String holdingBranch,
                           String biblio,
                           String copyNumber,
-                          String barcode) throws IOException {
+                          String barcode) throws Exception {
 
         setup(filename);
 
-        Text callNumberText = new Text(fixFieldLength(callNumber, FieldType.CALLNUMER));
+        Text callNumberText = new Text(fixFieldLength(Optional.ofNullable(callNumber).orElse(""), FieldType.CALLNUMER));
 
         java.util.List<Text> texts = new ArrayList<>();
 
         texts.add(callNumberText);
-        texts.add(new Text(fixFieldLength(creator, FieldType.CREATOR)));
-        texts.add(new Text(fixFieldLength(title, FieldType.TITLE)));
+        texts.add(new Text(fixFieldLength(Optional.ofNullable(creator).orElse(""), FieldType.CREATOR)));
+        texts.add(new Text(fixFieldLength(Optional.ofNullable(title).orElse(""), FieldType.TITLE)));
 
         final int[] horizontalPosition = {EIGHTEEN};
         texts.forEach(text -> {
@@ -229,10 +230,10 @@ class Label {
         });
 
         texts.clear();
-        texts.add(new Text(publicationDate));
-        texts.add(new Text(holdingBranch));
-        texts.add(new Text(biblio));
-        texts.add(new Text(copyNumber));
+        texts.add(new Text(Optional.ofNullable(publicationDate).orElse("")));
+        texts.add(new Text(Optional.ofNullable(holdingBranch).orElse("")));
+        texts.add(new Text(Optional.ofNullable(biblio).orElse("")));
+        texts.add(new Text(Optional.ofNullable(copyNumber).orElse("")));
 
         final int[] verticalPosition = {TEN};
 
@@ -247,7 +248,8 @@ class Label {
 
         setVerticalCallNumber(callNumberText);
 
-        getBarcode(barcode, pdfDocument, font);
+        getBarcode(Optional.ofNullable(barcode)
+                .orElseThrow(() -> new Exception("You need to add a barcode")), pdfDocument, font);
 
         document.close();
     }

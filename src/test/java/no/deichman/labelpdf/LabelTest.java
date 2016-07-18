@@ -57,7 +57,7 @@ public class LabelTest {
     }
 
     @Test
-    public void can_render_pdf() throws IOException {
+    public void can_render_pdf() throws Exception {
         Label label = new Label();
         String outputFile = "been.pdf";
         String temporaryFolderPath = temporaryFolder.getRoot().getAbsolutePath();
@@ -95,7 +95,7 @@ public class LabelTest {
     }
 
     @Test
-    public void can_render_existing_object() throws IOException {
+    public void can_render_existing_object() throws Exception {
         String temporaryFolderPath = temporaryFolder.getRoot().getAbsolutePath();
 
         String jsondata = "{\n"
