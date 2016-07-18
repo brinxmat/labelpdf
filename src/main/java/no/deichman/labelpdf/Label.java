@@ -1,5 +1,6 @@
 package no.deichman.labelpdf;
 
+import com.google.gson.annotations.SerializedName;
 import com.itextpdf.barcodes.BarcodeInter25;
 import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.kernel.color.Color;
@@ -35,15 +36,31 @@ class Label {
     private static final int FORTY = 40;
     private static final int TWELVE = 12;
     private static final int BARCODE_VERTICAL_OFFSET = -95;
-    public static final int TWENTY = 20;
-    public static final int SIX = 6;
+    private static final int TWENTY = 20;
+    private static final int SIX = 6;
+
+    @SerializedName("callNumber")
     private String callNumber;
+
+    @SerializedName("creator")
     private String creator;
+
+    @SerializedName("title")
     private String title;
+
+    @SerializedName("publicationDate")
     private String publicationDate;
+
+    @SerializedName("holdingBranch")
     private String holdingBranch;
+
+    @SerializedName("biblio")
     private String biblio;
+
+    @SerializedName("copyNumber")
     private String copyNumber;
+
+    @SerializedName("barcode")
     private String barcode;
 
     Label() {
@@ -134,16 +151,17 @@ class Label {
     }
 
     private static final int ZERO = 0;
-    private static final String REGULAR = "src/main/resources/FreeSerif.otf";
+    private static final String REGULAR = "/resources/font/FreeSerif.otf";
 
-    private PdfFont font = null;
-    private PdfDocument pdfDocument = null;
-    private PdfCanvas pdfCanvas = null;
-    private Document document = null;
+    private transient PdfFont font = null;
+    private transient PdfDocument pdfDocument = null;
+    private transient PdfCanvas pdfCanvas = null;
+    private transient Document document = null;
 
     private void setup(String filename) throws IOException {
         File file = new File(filename);
         file.getParentFile().mkdirs();
+
 
         PdfWriter pdfWriter = new PdfWriter(filename);
         pdfDocument = new PdfDocument(pdfWriter);
@@ -151,7 +169,9 @@ class Label {
         Rectangle addressLabel = new Rectangle(ZERO,ZERO, WIDTH, HEIGHT);
 
         PageSize dymoAddressLabel = new PageSize(addressLabel);
-        font = PdfFontFactory.createFont(REGULAR, PdfEncodings.IDENTITY_H, true);
+
+        font = PdfFontFactory.createFont(new FontProvider().read(REGULAR), PdfEncodings.IDENTITY_H, true);
+
 
         document = new Document(pdfDocument, dymoAddressLabel);
         document.setFixedPosition(ZERO, ZERO, HEIGHT, WIDTH);
@@ -164,6 +184,18 @@ class Label {
         PdfPage pdfPage = pdfDocument.addNewPage(dymoAddressLabel);
         pdfCanvas = new PdfCanvas(pdfPage);
 
+    }
+
+    void renderPDF(String filename) throws IOException {
+        renderPDF(filename,
+                getCallNumber(),
+                getCreator(),
+                getTitle(),
+                getPublicationDate(),
+                getHoldingBranch(),
+                getBiblio(),
+                getCopyNumber(),
+                getBarcode());
     }
 
     void renderPDF(String filename,

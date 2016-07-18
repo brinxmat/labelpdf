@@ -1,16 +1,23 @@
 package no.deichman.labelpdf;
 
+import com.google.gson.Gson;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
+import java.io.File;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Responsibility: test Label class.
  */
 public class LabelTest {
+    @Rule
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     @Test
     public void test_constructor() {
@@ -52,7 +59,10 @@ public class LabelTest {
     @Test
     public void can_render_pdf() throws IOException {
         Label label = new Label();
-        label.renderPDF("resource/test/been.pdf",
+        String outputFile = "been.pdf";
+        String temporaryFolderPath = temporaryFolder.getRoot().getAbsolutePath();
+
+        label.renderPDF(temporaryFolderPath + outputFile,
                 "820.000 Brims",
                 "Brims, Timo",
                 "Å hello ЙЖ asdasdsadsadasdasdasdasdasdفقك",
@@ -62,6 +72,47 @@ public class LabelTest {
                 "001",
                 "03011231231231"
         );
+
+        assertTrue("File did not exist", new File(temporaryFolderPath + outputFile).exists());
     }
 
+    @Test
+    public void can_map_from_json() {
+        String jsondata = "{\n"
+                + "\t\"callNumber\": \"820.000 Brims\",\n"
+                +"\t\"creator\": \"Brims, Timo\",\n"
+                + "\t\"title\": \"Å hello ЙЖ asdasdsadsadasdasdasdasdasdفقك\",\n"
+                + "\t\"publicationDate\": \"2014\",\n"
+                + "\t\"holdingBranch\": \"HUTL\",\n"
+                + "\t\"biblio\": \"3000321\",\n"
+                + "\t\"copyNumber\": \"001\",\n"
+                + "\t\"barcode\": \"03011231231231\"\n"
+                + "}";
+
+        Label label = new Gson().fromJson(jsondata, Label.class);
+
+        assertEquals("820.000 Brims", label.getCallNumber());
+    }
+
+    @Test
+    public void can_render_existing_object() throws IOException {
+        String temporaryFolderPath = temporaryFolder.getRoot().getAbsolutePath();
+
+        String jsondata = "{\n"
+                + "\t\"callNumber\": \"820.000 Brims\",\n"
+                +"\t\"creator\": \"Brims, Timo\",\n"
+                + "\t\"title\": \"Å hello ЙЖ asdasdsadsadasdasdasdasdasdفقك\",\n"
+                + "\t\"publicationDate\": \"2014\",\n"
+                + "\t\"holdingBranch\": \"HUTL\",\n"
+                + "\t\"biblio\": \"3000321\",\n"
+                + "\t\"copyNumber\": \"001\",\n"
+                + "\t\"barcode\": \"03011231231231\"\n"
+                + "}";
+        Label label = new Gson().fromJson(jsondata, Label.class);
+
+        label.renderPDF(temporaryFolderPath + "oo.pdf");
+
+        assertTrue("Could not find file", new File(temporaryFolderPath + "oo.pdf").exists());
+
+    }
 }
