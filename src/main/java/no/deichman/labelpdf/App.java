@@ -22,20 +22,22 @@ public final class App {
 
         Options options = new Options();
 
-        Option help = new Option("help", "Usage: Label --data <JSON data string> --output </path/to/file.pdf>");
+        Option help = Option.builder()
+                .longOpt("help")
+                .argName("help")
+                .desc("Usage: Label --data=<JSON data string> --output=</path/to/file.pdf>")
+                .build();
         Option data = Option.builder()
                 .longOpt("data")
                 .argName("data")
                 .hasArg()
                 .desc("Data to be processed")
-                .required()
                 .build();
         Option output = Option.builder()
                 .longOpt("output")
                 .argName("output")
                 .hasArg()
                 .desc("Path for result file")
-                .required()
                 .build();
         options.addOption(help);
         options.addOption(data);
@@ -50,10 +52,13 @@ public final class App {
                 Gson gson = new Gson();
                 Label label = gson.fromJson(line.getOptionValue("data"), Label.class);
                 label.renderPDF(line.getOptionValue("output"));
+            } else {
+                System.out.println(options.getOption("help").getDescription());
             }
 
         } catch(ParseException exp) {
             System.out.println("Parsing failed: " + exp.getMessage());
+            System.out.println(options.getOption("help").getDescription());
         }
 
     }

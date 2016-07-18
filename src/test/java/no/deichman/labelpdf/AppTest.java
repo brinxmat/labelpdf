@@ -53,8 +53,24 @@ public class AppTest {
     @Test
     public void test_main_method_with_no_args_fails() throws IOException {
         App.main(null);
-        assertEquals("Parsing failed: Missing required options: data, output" + EOL, consoleText.toString());
+        assertEquals("Usage: Label --data=<JSON data string> --output=</path/to/file.pdf>" + EOL, consoleText.toString());
     }
+
+    @Test
+    public void test_main_method_with_unacceptable_argument() throws IOException, InvocationTargetException, IllegalAccessException, NoSuchMethodException, ClassNotFoundException {
+        String[] args = new String[2];
+
+        args[0] = "--data=" + jsondata;
+        args[1] = "--faustian=" + filename;
+        appMain(args);
+
+        assertEquals("Parsing failed: Unrecognized option: --faustian="
+                + filename
+                + EOL
+                + "Usage: Label --data=<JSON data string> --output=</path/to/file.pdf>"
+                + EOL, consoleText.toString());
+    }
+
 
     @Test
     public void test_main_method() throws IOException, InvocationTargetException, IllegalAccessException, NoSuchMethodException, ClassNotFoundException {
@@ -67,6 +83,15 @@ public class AppTest {
 
         assertTrue(new File(temporaryFolderPath + filename).exists());
         assertEquals("", consoleText.toString());
+    }
+
+    @Test
+    public void test_help_returns_help() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        String[] args = new String[1];
+        args[0] = "--help";
+        appMain(args);
+        assertEquals("Usage: Label --data=<JSON data string> --output=</path/to/file.pdf>"
+                + EOL, consoleText.toString());
     }
 
     @After
