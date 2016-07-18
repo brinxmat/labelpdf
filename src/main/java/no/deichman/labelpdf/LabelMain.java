@@ -9,11 +9,11 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 /**
- * Responsibility: create an entrypoint for the application.
+ * Responsibility: utility class to create an entrypoint for the application.
  */
-public final class App {
+public final class LabelMain {
 
-    private App() {}
+    private LabelMain() {}
 
     public static void main(String[] args) throws Exception {
 

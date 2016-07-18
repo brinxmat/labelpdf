@@ -1,9 +1,9 @@
 # labelpdf
-Creates pdf labels according to a certain specification
+Creates verbose pdf library book labels to fit Dymo 36mm x 89mm.
 
 ##Build
 
-```gradle build test```
+```$ gradle build test```
 
 ##What is actually produced?
 
@@ -14,12 +14,14 @@ A pdf file that can be printed on consumer label printers. The current setup loo
 The benefit of using a PDF like this is that we can reliably produce labels that incorporate pre-formatted barcodes and
 unicode text for multiple scripts in ways that are not supported directly in PostScript and other PDLs.
 
+See printing label on dymo printers below.
+
 ##Usage
 
 Creating labels:
 
 ```
-    java -jar labelpdf-all-1.0-SNAPSHOT.jar --data='<formatted json>' --output='<filename.pdf>'
+    $ java -jar labelpdf-all-1.0-SNAPSHOT.jar --data='<formatted json>' --output='<filename.pdf>'
 ```
 
 JSON should be formatted according to the following:
@@ -39,7 +41,7 @@ JSON should be formatted according to the following:
 
 e.g.: 
 ```
-    java -jar labelpdf-all-1.0-SNAPSHOT.jar \
+    $ java -jar labelpdf-all-1.0-SNAPSHOT.jar \
         --data='{
                   "callNumber": "820.000 Brims",
                  "creator": "Brims, Timo",
@@ -52,3 +54,23 @@ e.g.:
                  }' \
                  --output="./file.pdf"
 ```
+
+##Printing labels on Dymo printers
+
+To print the produced label on a Dymo printer, simply use ```lp``` or 
+```lpr``` in the following way:
+
+```$ lpr -P <Your_printer_name> -o media=Custom.<media-dimensions> <filename.pdf>```
+
+(You can find your printer name using ```$ lpstat -p -d```
+
+    $ java -jar labelpdf-all-1.0-SNAPSHOT.jar \
+        --data='{
+          "callNumber": "810.000 Brims",
+          "title": "Å hello ЙЖ",
+          "publicationDate": "2014",
+          "holdingBranch": "HUTL",
+          "barcode": "03011231231231"
+        }' \
+        --output="./file.pdf" \
+        && lpr -P DYMO_LabelWriter_450 -o media=Custom.36x89mm file.pdf 

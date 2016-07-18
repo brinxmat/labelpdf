@@ -17,9 +17,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Responsibility: Test App.
+ * Responsibility: Test LabelMain.
  */
-public class AppTest {
+public class LabelmainTest {
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -52,7 +52,7 @@ public class AppTest {
 
     @Test
     public void test_main_method_with_no_args_fails() throws Exception {
-        App.main(null);
+        LabelMain.main(null);
         assertEquals("Usage: Label --data=<JSON data string> --output=</path/to/file.pdf>" + EOL, consoleText.toString());
     }
 
@@ -124,7 +124,7 @@ public class AppTest {
             NoSuchMethodException,
             InvocationTargetException,
             IllegalAccessException {
-        Class<?> clazz = Class.forName("no.deichman.labelpdf.App");
+        Class<?> clazz = Class.forName("no.deichman.labelpdf.LabelMain");
         Method appMain;
         appMain = clazz.getMethod("main", String[].class);
         appMain.invoke(null, new Object[] {args});

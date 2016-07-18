@@ -54,7 +54,7 @@ task fatJar(type: Jar) {
     manifest {
         attributes 'Implementation-Title': 'Label PDF',
                 'Implementation-Version': version,
-                'Main-Class': 'no.deichman.labelpdf.App'
+                'Main-Class': 'no.deichman.labelpdf.LabelMain'
     }
     baseName = project.name + '-all'
     from {
