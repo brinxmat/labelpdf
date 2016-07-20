@@ -1,10 +1,12 @@
 package no.deichman.labelpdf;
 
+import com.itextpdf.kernel.font.PdfFont;
 import org.junit.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -12,24 +14,9 @@ import static org.junit.Assert.assertEquals;
  */
 public class FontProviderTest {
     @Test
-    public void test_read() throws IOException {
-        FontProvider fontProvider = new FontProvider();
-        String result = fontProvider.read("/resources/font/FreeSerif.otf");
-        assertEquals(Label.class.getResource("/resources/font/FreeSerif.otf").getPath(), result);
+    public void test_it_provides_pdffont() throws IOException {
+        PdfFont pdfFont = new FontProvider().getFont();
+        assertNotNull(pdfFont);
+        assertTrue(pdfFont.isEmbedded());
     }
-
-    @Test
-    public void test_ide_read() throws IOException {
-        FontProvider fontProvider = new FontProvider();
-        String result = fontProvider.getFontResource("/resources/font/FreeSerif.otf");
-        assertEquals(Label.class.getResource("/resources/font/FreeSerif.otf").getPath(), result);
-    }
-
-    @Test
-    public void test_jar_read() throws IOException {
-        FontProvider fontProvider = new FontProvider();
-        String result = fontProvider.createLocalFile("/resources/font/FreeSerif.otf");
-        assertEquals("FreeSerif.otf", result);
-    }
-
 }

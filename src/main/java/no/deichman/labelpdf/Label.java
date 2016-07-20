@@ -2,6 +2,7 @@ package no.deichman.labelpdf;
 
 import com.google.gson.annotations.SerializedName;
 import com.itextpdf.barcodes.BarcodeInter25;
+import com.itextpdf.io.codec.Base64;
 import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.kernel.color.Color;
 import com.itextpdf.kernel.font.PdfFont;
@@ -16,7 +17,9 @@ import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Text;
+import org.apache.commons.io.IOUtils;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -152,7 +155,6 @@ class Label {
     }
 
     private static final int ZERO = 0;
-    private static final String REGULAR = "/resources/font/FreeSerif.otf";
 
     private transient PdfFont font = null;
     private transient PdfDocument pdfDocument = null;
@@ -163,7 +165,6 @@ class Label {
         File file = new File(filename);
         file.getParentFile().mkdirs();
 
-
         PdfWriter pdfWriter = new PdfWriter(filename);
         pdfDocument = new PdfDocument(pdfWriter);
 
@@ -171,7 +172,7 @@ class Label {
 
         PageSize dymoAddressLabel = new PageSize(addressLabel);
 
-        font = PdfFontFactory.createFont(new FontProvider().read(REGULAR), PdfEncodings.IDENTITY_H, true);
+        font = FontProvider.getFont();
 
         document = new Document(pdfDocument, dymoAddressLabel);
         document.setFixedPosition(ZERO, ZERO, HEIGHT, WIDTH);
