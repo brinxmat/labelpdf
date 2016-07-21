@@ -1,6 +1,5 @@
 package no.deichman.labelpdf;
 
-import com.google.gson.annotations.SerializedName;
 import com.itextpdf.barcodes.BarcodeInter25;
 import com.itextpdf.kernel.color.Color;
 import com.itextpdf.kernel.font.PdfFont;

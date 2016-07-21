@@ -31,82 +31,82 @@ public class LabelDataImpl implements LabelData {
     private String barcode;
 
     @Override
-    public String getCallNumber() {
+    public final String getCallNumber() {
         return callNumber;
     }
 
     @Override
-    public void setCallNumber(String callNumber) {
+    public final void setCallNumber(String callNumber) {
         this.callNumber = callNumber;
     }
 
     @Override
-    public String getCreator() {
+    public final String getCreator() {
         return creator;
     }
 
     @Override
-    public void setCreator(String creator) {
+    public final void setCreator(String creator) {
         this.creator = creator;
     }
 
     @Override
-    public String getTitle() {
+    public final String getTitle() {
         return title;
     }
 
     @Override
-    public void setTitle(String title) {
+    public final void setTitle(String title) {
         this.title = title;
     }
 
     @Override
-    public String getPublicationDate() {
+    public final String getPublicationDate() {
         return publicationDate;
     }
 
     @Override
-    public void setPublicationDate(String publicationDate) {
+    public final void setPublicationDate(String publicationDate) {
         this.publicationDate = publicationDate;
     }
 
     @Override
-    public String getHoldingBranch() {
+    public final String getHoldingBranch() {
         return holdingBranch;
     }
 
     @Override
-    public void setHoldingBranch(String holdingBranch) {
+    public final void setHoldingBranch(String holdingBranch) {
         this.holdingBranch = holdingBranch;
     }
 
     @Override
-    public String getBiblio() {
+    public final String getBiblio() {
         return biblio;
     }
 
     @Override
-    public void setBiblio(String biblio) {
+    public final void setBiblio(String biblio) {
         this.biblio = biblio;
     }
 
     @Override
-    public String getCopyNumber() {
+    public final String getCopyNumber() {
         return copyNumber;
     }
 
     @Override
-    public void setCopyNumber(String copyNumber) {
+    public final void setCopyNumber(String copyNumber) {
         this.copyNumber = copyNumber;
     }
 
     @Override
-    public String getBarcode() {
+    public final String getBarcode() {
         return barcode;
     }
 
     @Override
-    public void setBarcode(String barcode) {
+    public final void setBarcode(String barcode) {
         this.barcode = barcode;
     }
 

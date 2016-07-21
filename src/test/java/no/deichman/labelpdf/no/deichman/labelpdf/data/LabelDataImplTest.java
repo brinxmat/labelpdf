@@ -67,5 +67,4 @@ public class LabelDataImplTest {
 
         assertEquals("820.000 Brims", labelData.getCallNumber());
     }
-
 }
