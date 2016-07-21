@@ -15,7 +15,7 @@ import static org.junit.Assert.assertTrue;
 public class FontProviderTest {
     @Test
     public void test_it_provides_pdffont() throws IOException {
-        PdfFont pdfFont = new FontProvider().getFont();
+        PdfFont pdfFont = FontProvider.getFont();
         assertNotNull(pdfFont);
         assertTrue(pdfFont.isEmbedded());
     }

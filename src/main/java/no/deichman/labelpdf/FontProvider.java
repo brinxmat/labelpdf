@@ -10,9 +10,13 @@ import java.io.IOException;
 /**
  * Responsibility: manage reading resources.
  */
-class FontProvider {
+final class FontProvider {
 
     private static final String REGULAR = "/resources/font/FreeSerif.otf";
+
+    private FontProvider() {
+
+    }
 
     static PdfFont getFont() throws IOException {
 
