@@ -21,6 +21,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class LabelmainTest {
 
+    public static final int THREE = 3;
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
@@ -110,7 +111,20 @@ public class LabelmainTest {
         String temporaryFolderPath = temporaryFolder.getRoot().getAbsolutePath();
 
         args[0] = "--data=" + "{\"barcode\": \"03101234\"}";
-        args[1] = "--output=" +temporaryFolderPath + filename;
+        args[1] = "--output=" + temporaryFolderPath + filename;
+        appMain(args);
+        assertTrue(new File(temporaryFolderPath + filename).exists());
+    }
+
+    @Test
+    public void test_can_pass_label_dimensions() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        String[] args = new String[THREE];
+
+        String temporaryFolderPath = temporaryFolder.getRoot().getAbsolutePath();
+        args[0] = "--data=" + "{\"barcode\": \"0123\"}";
+        args[1] = "--output=" + temporaryFolderPath + filename;
+        args[2] = "--label=" + "{\"width\": 36, \"height\": 89, \"name\": \"Address\"}";
+
         appMain(args);
         assertTrue(new File(temporaryFolderPath + filename).exists());
     }

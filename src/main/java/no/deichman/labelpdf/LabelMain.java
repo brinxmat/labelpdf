@@ -1,6 +1,8 @@
 package no.deichman.labelpdf;
 
 import com.google.gson.Gson;
+import no.deichman.labelpdf.data.LabelData;
+import no.deichman.labelpdf.data.LabelDataImpl;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -37,18 +39,26 @@ public final class LabelMain {
                 .hasArg()
                 .desc("Path for result file")
                 .build();
+        Option labelFormat = Option.builder()
+                .longOpt("label")
+                .argName("label")
+                .hasArg()
+                .desc("Format information for label")
+                .build();
         options.addOption(help);
         options.addOption(data);
         options.addOption(output);
+        options.addOption(labelFormat);
 
         CommandLineParser parser = new DefaultParser();
+        Label label = new Label();
 
         try {
             CommandLine line = parser.parse(options, args);
 
             if (line.hasOption("data") && line.hasOption("output")) {
-                Gson gson = new Gson();
-                Label label = gson.fromJson(line.getOptionValue("data"), Label.class);
+                LabelData labelData = new Gson().fromJson(line.getOptionValue("data"), LabelDataImpl.class);
+                label.setData(labelData);
                 label.renderPDF(line.getOptionValue("output"));
             } else {
                 System.out.println(options.getOption("help").getDescription());

@@ -13,11 +13,11 @@ import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Text;
-import org.apache.commons.io.IOUtils;
+import no.deichman.labelpdf.data.LabelData;
+import no.deichman.labelpdf.no.deichman.labelpdf.labels.Label89x36;
+import no.deichman.labelpdf.no.deichman.labelpdf.labels.LabelTemplate;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -27,8 +27,6 @@ import java.util.Optional;
 class Label {
 
     private static final double ROTATION_ANGLE_FLIP = 3.14159;
-    private static final int WIDTH = 102;
-    private static final int HEIGHT = 252;
     private static final double ROTATION_ANGLE = 1.5708;
     private static final int TEN = 10;
     private static final int FIELD_WIDTH = 230;
@@ -38,161 +36,51 @@ class Label {
     private static final int BARCODE_VERTICAL_OFFSET = -95;
     private static final int TWENTY = 20;
     private static final int SIX = 6;
-
-    @SerializedName("callNumber")
-    private String callNumber;
-
-    @SerializedName("creator")
-    private String creator;
-
-    @SerializedName("title")
-    private String title;
-
-    @SerializedName("publicationDate")
-    private String publicationDate;
-
-    @SerializedName("holdingBranch")
-    private String holdingBranch;
-
-    @SerializedName("biblio")
-    private String biblio;
-
-    @SerializedName("copyNumber")
-    private String copyNumber;
-
-    @SerializedName("barcode")
-    private String barcode;
-
-    Label() {
-
-    }
-
-    String getCallNumber() {
-        return callNumber;
-    }
-
-    void setCallNumber(String callNumber) {
-        this.callNumber = callNumber;
-    }
-
-    String getCreator() {
-        return creator;
-    }
-
-    void setCreator(String creator) {
-        this.creator = creator;
-    }
-
-    String getTitle() {
-        return title;
-    }
-
-    void setTitle(String title) {
-        this.title = title;
-    }
-
-    String getPublicationDate() {
-        return publicationDate;
-    }
-
-    void setPublicationDate(String publicationDate) {
-        this.publicationDate = publicationDate;
-    }
-
-    String getHoldingBranch() {
-        return holdingBranch;
-    }
-
-    void setHoldingBranch(String holdingBranch) {
-        this.holdingBranch = holdingBranch;
-    }
-
-    String getBiblio() {
-        return biblio;
-    }
-
-    void setBiblio(String biblio) {
-        this.biblio = biblio;
-    }
-
-    String getCopyNumber() {
-        return copyNumber;
-    }
-
-    void setCopyNumber(String copyNumber) {
-        this.copyNumber = copyNumber;
-    }
-
-    String getBarcode() {
-        return barcode;
-    }
-
-    void setBarcode(String barcode) {
-        this.barcode = barcode;
-    }
-
-    Label(String callNumber,
-          String creator,
-          String title,
-          String publicationDate,
-          String holdingBranch,
-          String biblio,
-          String copyNumber,
-          String barcode) {
-
-        setCallNumber(callNumber);
-        setCreator(creator);
-        setTitle(title);
-        setPublicationDate(publicationDate);
-        setHoldingBranch(holdingBranch);
-        setBiblio(biblio);
-        setCopyNumber(copyNumber);
-        setBarcode(barcode);
-    }
-
     private static final int ZERO = 0;
 
-    private transient PdfFont font = null;
-    private transient PdfDocument pdfDocument = null;
-    private transient PdfCanvas pdfCanvas = null;
-    private transient Document document = null;
+    private PdfFont font = null;
+    private PdfDocument pdfDocument = null;
+    private PdfCanvas pdfCanvas = null;
+    private Document document = null;
+    private LabelData labelData = null;
 
-    private void setup(String filename) throws IOException {
+    private void setup(String filename) throws Exception {
         File file = new File(filename);
         file.getParentFile().mkdirs();
 
         PdfWriter pdfWriter = new PdfWriter(filename);
         pdfDocument = new PdfDocument(pdfWriter);
 
-        Rectangle addressLabel = new Rectangle(ZERO,ZERO, WIDTH, HEIGHT);
-
-        PageSize dymoAddressLabel = new PageSize(addressLabel);
+        LabelTemplate label = new Label89x36();
+        PageSize pageSize = label.getPageSize();
+        int height = label.getHeightInPoints();
+        int width = label.getWidthInPoints();
 
         font = FontProvider.getFont();
 
-        document = new Document(pdfDocument, dymoAddressLabel);
-        document.setFixedPosition(ZERO, ZERO, HEIGHT, WIDTH);
-        document.setWidth(WIDTH);
-        document.setHeight(HEIGHT);
+        document = new Document(pdfDocument, pageSize);
+        document.setFixedPosition(ZERO, ZERO, height, width);
+        document.setWidth(width);
+        document.setHeight(height);
         document.setFontSize(TEN);
         document.setFont(font);
         document.setMargins(ZERO, ZERO, ZERO, ZERO);
 
-        PdfPage pdfPage = pdfDocument.addNewPage(dymoAddressLabel);
+        PdfPage pdfPage = pdfDocument.addNewPage(pageSize);
         pdfCanvas = new PdfCanvas(pdfPage);
 
     }
 
     void renderPDF(String filename) throws Exception {
         renderPDF(filename,
-                getCallNumber(),
-                getCreator(),
-                getTitle(),
-                getPublicationDate(),
-                getHoldingBranch(),
-                getBiblio(),
-                getCopyNumber(),
-                getBarcode());
+                labelData.getCallNumber(),
+                labelData.getCreator(),
+                labelData.getTitle(),
+                labelData.getPublicationDate(),
+                labelData.getHoldingBranch(),
+                labelData.getBiblio(),
+                labelData.getCopyNumber(),
+                labelData.getBarcode());
     }
 
     void renderPDF(String filename,
@@ -289,5 +177,9 @@ class Label {
             retVal = string.substring(0, type.maxlength()-1) + "…";
         }
         return retVal;
+    }
+
+    public void setData(LabelData labelData) {
+        this.labelData = labelData;
     }
 }
