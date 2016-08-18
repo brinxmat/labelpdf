@@ -23,7 +23,7 @@ import java.util.Optional;
 /**
  * Responsibility: allow creation of basic label.
  */
-class Label {
+public class Label {
 
     private static final double ROTATION_ANGLE_FLIP = 3.14159;
     private static final double ROTATION_ANGLE = 1.5708;
@@ -82,7 +82,7 @@ class Label {
                 labelData.getBarcode());
     }
 
-    void renderPDF(String filename,
+    public void renderPDF(String filename,
                           String callNumber,
                           String creator,
                           String title,
