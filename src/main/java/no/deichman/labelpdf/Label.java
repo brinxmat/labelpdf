@@ -16,6 +16,7 @@ import no.deichman.labelpdf.data.LabelData;
 import no.deichman.labelpdf.no.deichman.labelpdf.labels.Label89x36;
 import no.deichman.labelpdf.no.deichman.labelpdf.labels.LabelTemplate;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -42,12 +43,33 @@ public final class Label {
     private PdfCanvas pdfCanvas = null;
     private Document document = null;
     private LabelData labelData = null;
+    private ByteArrayOutputStream byteArrayOutputStream = null;
+
+    public byte[] getBytes() {
+        return byteArrayOutputStream.toByteArray();
+    }
+
+    private PdfWriter pdfWriter = null;
 
     private void setup(String filename) throws Exception {
-        File file = new File(filename);
-        file.getParentFile().mkdirs();
 
-        PdfWriter pdfWriter = new PdfWriter(filename);
+        if (filename == null) {
+            setupWithBAOS();
+        } else {
+            File file = new File(filename);
+            file.getParentFile().mkdirs();
+
+            pdfWriter = new PdfWriter(filename);
+        }
+        setup();
+    }
+
+    private void setupWithBAOS() {
+        byteArrayOutputStream = new ByteArrayOutputStream();
+        pdfWriter = new PdfWriter(byteArrayOutputStream);
+    }
+
+    private void setup() throws Exception {
         pdfDocument = new PdfDocument(pdfWriter);
 
         LabelTemplate label = new Label89x36();
@@ -72,6 +94,18 @@ public final class Label {
 
     void renderPDF(String filename) throws Exception {
         renderPDF(filename,
+                labelData.getCallNumber(),
+                labelData.getCreator(),
+                labelData.getTitle(),
+                labelData.getPublicationDate(),
+                labelData.getHoldingBranch(),
+                labelData.getBiblio(),
+                labelData.getCopyNumber(),
+                labelData.getBarcode());
+    }
+
+    public void renderPDFAsBAOS() throws Exception {
+        renderPDF(null,
                 labelData.getCallNumber(),
                 labelData.getCreator(),
                 labelData.getTitle(),
