@@ -195,6 +195,7 @@ public final class Label {
         barcodeInter25.setCodeType(BarcodeInter25.ALIGN_LEFT);
         barcodeInter25.setCode(barcode);
         barcodeInter25.setFont(font);
+        barcodeInter25.fitWidth(150);
         AffineTransform transformationMatrix = AffineTransform.getRotateInstance(ROTATION_ANGLE);
         pdfCanvas.concatMatrix(transformationMatrix);
         transformationMatrix = AffineTransform.getTranslateInstance(TEN, BARCODE_VERTICAL_OFFSET);
