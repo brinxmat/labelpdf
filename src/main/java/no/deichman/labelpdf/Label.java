@@ -33,10 +33,12 @@ public final class Label {
     private static final int EIGHTEEN = 18;
     private static final int FORTY = 40;
     private static final int TWELVE = 12;
+    private static final int FOURTEEN = 14;
     private static final int BARCODE_VERTICAL_OFFSET = -95;
     private static final int TWENTY = 20;
     private static final int SIX = 6;
     private static final int ZERO = 0;
+    public static final int ONE_HUNDRED_AND_FIFTY_SEVEN = 157;
 
     private PdfFont font = null;
     private PdfDocument pdfDocument = null;
@@ -83,7 +85,7 @@ public final class Label {
         document.setFixedPosition(ZERO, ZERO, height, width);
         document.setWidth(width);
         document.setHeight(height);
-        document.setFontSize(TEN);
+        document.setFontSize(TWELVE);
         document.setFont(font);
         document.setMargins(ZERO, ZERO, ZERO, ZERO);
 
@@ -144,7 +146,7 @@ public final class Label {
                     FIELD_WIDTH)
                     .setRotationAngle(ROTATION_ANGLE));
 
-            horizontalPosition[0] = horizontalPosition[0] + TWELVE;
+            horizontalPosition[0] = horizontalPosition[0] + FOURTEEN;
         });
 
         texts.clear();
