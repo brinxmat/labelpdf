@@ -38,7 +38,7 @@ public class LabelmainTest {
         System.setOut(new PrintStream(consoleText));
 
         jsondata = "{"
-                + "\"callNumber\": \"820.000 Brims\",\n"
+                + "\"callNumber\": \"q 820.000000000000 Brims\",\n"
                 + "        \"creator\": \"Brims, Timo\",\n"
                 + "                \"title\": \"Å hello ЙЖ asdasdsadsadasdasdasdasdasdفقك\",\n"
                 + "                \"publicationDate\": \"2014\",\n"

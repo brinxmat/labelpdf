@@ -50,7 +50,7 @@ public class LabelTest {
         String temporaryFolderPath = temporaryFolder.getRoot().getAbsolutePath();
 
         String jsondata = "{\n"
-                + "\t\"callNumber\": \"820.000 Brims\",\n"
+                + "\t\"callNumber\": \"820.000000000000 Brims\",\n"
                 +"\t\"creator\": \"Brims, Timo\",\n"
                 + "\t\"title\": \"Å hello ЙЖ asdasdsadsadasdasdasdasdasdفقك\",\n"
                 + "\t\"publicationDate\": \"2014\",\n"

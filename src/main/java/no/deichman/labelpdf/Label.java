@@ -13,11 +13,14 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Text;
 import no.deichman.labelpdf.data.LabelData;
+import no.deichman.labelpdf.fontutils.Font;
+import no.deichman.labelpdf.fontutils.FontProvider;
 import no.deichman.labelpdf.no.deichman.labelpdf.labels.Label89x36;
 import no.deichman.labelpdf.no.deichman.labelpdf.labels.LabelTemplate;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -36,9 +39,13 @@ public final class Label {
     private static final int FOURTEEN = 14;
     private static final int BARCODE_VERTICAL_OFFSET = -95;
     private static final int TWENTY = 20;
-    private static final int SIX = 6;
     private static final int ZERO = 0;
-    public static final int ONE_HUNDRED_AND_FIFTY_SEVEN = 157;
+    private static final int BARCODE_WIDTH = 165;
+    private static final int THIRTEEN = 13;
+    private static final String KOMMUNE_NUMBER = "0301";
+    private static final float[] VERTICAL_POSITION = new float[]{10, 43, 80, 110, 159};
+    public static final int SIX = 6;
+    public static final int THREE = 3;
 
     private PdfFont font = null;
     private PdfDocument pdfDocument = null;
@@ -79,7 +86,7 @@ public final class Label {
         int height = label.getHeightInPoints();
         int width = label.getWidthInPoints();
 
-        font = FontProvider.getFont();
+        font = FontProvider.getFont(Font.SERIF);
 
         document = new Document(pdfDocument, pageSize);
         document.setFixedPosition(ZERO, ZERO, height, width);
@@ -130,11 +137,11 @@ public final class Label {
 
         setup(filename);
 
-        Text callNumberText = new Text(fixFieldLength(Optional.ofNullable(callNumber).orElse(""), FieldType.CALLNUMER));
+        String callNumberString = Optional.ofNullable(callNumber).orElse("");
 
         java.util.List<Text> texts = new ArrayList<>();
 
-        texts.add(callNumberText);
+        texts.add(new Text(callNumberString));
         texts.add(new Text(fixFieldLength(Optional.ofNullable(creator).orElse(""), FieldType.CREATOR)));
         texts.add(new Text(fixFieldLength(Optional.ofNullable(title).orElse(""), FieldType.TITLE)));
 
@@ -152,44 +159,53 @@ public final class Label {
         texts.clear();
         texts.add(new Text(Optional.ofNullable(publicationDate).orElse("")));
         texts.add(new Text(Optional.ofNullable(holdingBranch).orElse("")));
+        texts.add(new Text((KOMMUNE_NUMBER)));
         texts.add(new Text(Optional.ofNullable(biblio).orElse("")));
         texts.add(new Text(Optional.ofNullable(copyNumber).orElse("")));
 
-        final int[] verticalPosition = {TEN};
+        for (int i = 0; i<texts.size(); i++) {
+            document.add(
+                    new Paragraph(texts.get(i)).
+                    setFixedPosition(horizontalPosition[0], VERTICAL_POSITION[i], FIELD_WIDTH).
+                            setRotationAngle(ROTATION_ANGLE)
+            );
+        }
 
-        texts.forEach(text -> {
-            document.add(new Paragraph(text).setFixedPosition(horizontalPosition[0], verticalPosition[0], FIELD_WIDTH).setRotationAngle(ROTATION_ANGLE));
-            if (verticalPosition[0] == TEN) {
-                verticalPosition[0] = FORTY;
-            } else {
-                verticalPosition[0] = (verticalPosition[0] - 1) + (verticalPosition[0] - 2);
-            }
-        });
-
-        setVerticalCallNumber(callNumberText);
-
+        if (callNumberString.length() > 0) {
+            setVerticalCallNumber(callNumberString);
+        }
         getBarcode(Optional.ofNullable(barcode)
                 .orElseThrow(() -> new Exception("You need to add a barcode")), pdfDocument, font);
 
         document.close();
     }
 
-    private void setVerticalCallNumber(Text callNumberText) {
-        int callNumberVerticalOffsetReduction = TWENTY;
+    private void setVerticalCallNumber(String spineLabelText) throws IOException {
 
-        if (callNumberText.getText().length() < FieldType.CALLNUMER.maxlength()) {
-            callNumberVerticalOffsetReduction = TWENTY;
-        } else if (callNumberText.getText().length() > FieldType.CALLNUMER.maxlength()) {
-            int numberOfNewlines = callNumberText.getText().length() - callNumberText.getText().replace("\n", "").length();
-            callNumberVerticalOffsetReduction = TWENTY - (numberOfNewlines * SIX);
+        int fontSize = THIRTEEN;
+
+        String formattedText = spineLabelText.replace(" ", "\n");
+        Text callNumber = new Text(formattedText);
+        if (spineLabelText.matches(".*[0-9]{8}.*")) {
+            callNumber.setCharacterSpacing(-1);
         }
+        PdfFont spineFont = FontProvider.getFont(Font.SANS);
+        callNumber.setFontSize(fontSize);
+        callNumber.setFont(spineFont);
 
-        document.add(new Paragraph(callNumberText)
+        float lines = getTextHeight(formattedText);
+
+        document.add(new Paragraph(callNumber)
                 .setFixedPosition(
-                        document.getWidth().getValue() - TWELVE,
-                        document.getHeight() - (callNumberVerticalOffsetReduction),
+                        document.getWidth().getValue() - SIX,
+                        document.getHeight() - (lines),
                         FIELD_WIDTH)
-                .setRotationAngle(ROTATION_ANGLE_FLIP));
+                .setRotationAngle(ROTATION_ANGLE_FLIP)
+        );
+    }
+
+    private float getTextHeight(String formattedText) {
+        return (formattedText.length() - (formattedText.replace("\n", "").length())) + THREE;
     }
 
     private void getBarcode(String barcode, PdfDocument pdfDocument, PdfFont font) {
@@ -197,7 +213,7 @@ public final class Label {
         barcodeInter25.setCodeType(BarcodeInter25.ALIGN_LEFT);
         barcodeInter25.setCode(barcode);
         barcodeInter25.setFont(font);
-        barcodeInter25.fitWidth(ONE_HUNDRED_AND_FIFTY_SEVEN);
+        barcodeInter25.fitWidth(BARCODE_WIDTH);
         AffineTransform transformationMatrix = AffineTransform.getRotateInstance(ROTATION_ANGLE);
         pdfCanvas.concatMatrix(transformationMatrix);
         transformationMatrix = AffineTransform.getTranslateInstance(TEN, BARCODE_VERTICAL_OFFSET);
@@ -207,10 +223,8 @@ public final class Label {
 
     private String fixFieldLength(String string, FieldType type) {
         String retVal = string;
-        if (string.length() > type.maxlength() && type.equals(FieldType.CALLNUMER)) {
-            retVal = string.replace(" ", " \n");
-        } else if (string.length() > type.maxlength() && (type.equals(FieldType.TITLE) || type.equals(FieldType.CREATOR))) {
-            retVal = string.substring(0, type.maxlength()-1) + "…";
+        if (string.length() > type.maxlength() && (type.equals(FieldType.TITLE) || type.equals(FieldType.CREATOR))) {
+            retVal = string.substring(0, type.maxlength() - 1) + "…";
         }
         return retVal;
     }
